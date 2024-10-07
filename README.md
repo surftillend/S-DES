@@ -27,6 +27,11 @@
 （测试密钥1010000010）<br>
 ![image](https://github.com/surftillend/S-DES/blob/main/readmePicture/crossCheck2.jpg)<br>
 
-3.破解密钥与封闭测试:
+3.加密文字
+===
+输入文字后，文字将单个字符按ASCII码转换为八位二进制，按后者完成加密<br>
+![image](https://github.com/surftillend/S-DES/blob/main/readmePicture/text0.png)
+
+4.破解密钥与封闭测试:
 ===
 ![image](https://github.com/surftillend/S-DES/blob/main/readmePicture/cracking0.png)<br>
