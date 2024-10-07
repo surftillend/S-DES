@@ -44,6 +44,17 @@ bool *inputIntoArray(bool* from, bool* to,int length){//测试期间输入原密钥用函数
 		to[i]=from[i];
 }
 
+bool stringToArray(string input, bool* output,int n){//将输入的string存入数组（参数2），同时检查输入是否合法（参数3为指定长度）。非法输入返回0，正常结算返回1
+	if(input.length()!=n)
+		return 0;
+	for(int i=0;i<input.length();i++){
+		if(input[i]!='0'&&input[i]!='1')
+			return 0;
+		output[i]=(int)input[i]-'0';
+	}
+	return 1;
+}
+
 //密钥部分函数
 bool *generateOriginalKey() { //生成原密钥的函数（文档中未提及）
 	srand((unsigned int)time(NULL));
@@ -290,22 +301,29 @@ int main() {
 	cout<<"----------------------------\n| welcome to S-DES system!|\n----------------------------\n";
 	int choice=-1;
 	do{
-		cout<<"for encrpt enter 1\nfor decrpt enter2\nfor cracking key enter 3\nfor exit enter 0\n";
+		cout<<"for encrpt enter 1\nfor decrpt enter 2\nfor cracking key enter 3\nfor exit enter 0\n";
 		cin>>choice;
 		if(choice==0)
 			cout<<"You're now exiting!\n"<<endl;
 		else if(choice==1){
 			cout<<"Do you have 10 digit key? 1 for yes, 2 for no\n";
 			int choice2=0;
+			string inputString;
+			bool ok=false;
 			do{
 				cin>>choice2;
 				switch (choice2){
 				case 1:
-					cout<<"enter key\n";
-					bool inputKey[10];
-					for(int i=0;i<10;i++)
-						cin>>inputKey[i];
-					inputIntoArray(inputKey,key,10);
+					ok=false;
+					while(!ok){
+						cout<<"enter the 10 digit key\n";
+						cin>>inputString;
+						ok=stringToArray(inputString,key,10);
+						if(!ok){
+							cout<<"please enter a correct key!\n";
+							cout<<"the key should be binary, and have 10 digits\n";
+						}
+					}
 					break;
 				case 2:
 					key = generateOriginalKey();
@@ -325,11 +343,16 @@ int main() {
 				int n;
 				switch (choice2){
 				case 1:
-					cout<<"Please enter plaintext\n";
-					bool plainText[8];
-					for(int i=0;i<8;i++)
-						cin>>plainText[i];
-					inputIntoArray(plainText,code,8);
+					ok=false;
+					while(!ok){
+						cout<<"Please enter plaintext\n";
+						cin>>inputString;
+						ok=stringToArray(inputString,code,8);
+						if(!ok){
+							cout<<"please enter correctly!\n";
+							cout<<"input should be binary, and have 8 digits\n";
+						}
+					}
 					code=C(code);
 					cout<<"result:";
 					print(code,8);
@@ -354,29 +377,55 @@ int main() {
 			
 		}
 		else if(choice==2){
-			cout<<"please enter the 10 digit key\n";
-			bool inputKey[10];
-			for(int i=0;i<10;i++)
-				cin>>inputKey[i];
-			inputIntoArray(inputKey,key,10);
-			cout<<"please enter ciphertext\n";
-			bool cipherText[8];
-			for(int i=0;i<8;i++)
-				cin>>cipherText[i];
-			inputIntoArray(cipherText,code,8);
+			string inputString;
+			bool ok=false;
+			while(!ok){
+				cout<<"please enter the 10 digit key\n";
+				cin>>inputString;
+				ok=stringToArray(inputString,key,10);
+				if(!ok){
+					cout<<"please enter a correct key!\n";
+					cout<<"the key should be binary, and have 10 digits\n";
+				}
+			}
+			ok=false;
+			while(!ok){
+				cout<<"please enter ciphertext\n";
+				cin>>inputString;
+				ok=stringToArray(inputString,code,8);
+				if(!ok){
+					cout<<"please enter correctly!\n";
+					cout<<"input should be binary, and have 8 digits\n";
+				}
+			}
 			code=P(code);
 			cout<<"result:";
 			print(code,8);
 		}
 		else if(choice==3){
-			cout<<"Please enter plaintext\n";
+			string inputString;
+			bool ok=false;
 			bool plainText[8];
-			for(int i=0;i<8;i++)
-				cin>>plainText[i];
-			cout<<"please enter ciphertext\n";
 			bool cipherText[8];
-			for(int i=0;i<8;i++)
-				cin>>cipherText[i];
+			while(!ok){
+				cout<<"Please enter plaintext\n";
+				cin>>inputString;
+				ok=stringToArray(inputString,plainText,8);
+				if(!ok){
+					cout<<"please enter correctly!\n";
+					cout<<"input should be binary, and have 8 digits\n";
+				}
+			}
+			ok=false;
+			while(!ok){
+				cout<<"please enter ciphertext\n";
+				cin>>inputString;
+				ok=stringToArray(inputString,cipherText,8);
+				if(!ok){
+					cout<<"please enter correctly!\n";
+					cout<<"input should be binary, and have 8 digits\n";
+				}
+			}
 			bool testKey[10]={};
 			cout<<"Possible key:\n";
 			dfsOriginalKey(plainText,cipherText,0,testKey);
